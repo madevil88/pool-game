@@ -1,5 +1,5 @@
-import { startGame } from './game';
+import { startGame } from "./game";
 
-import './styles/creative.scss';
+import "./styles/creative.scss";
 
 startGame();
