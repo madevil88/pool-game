@@ -10,7 +10,7 @@ import Matter, {
   MouseConstraint,
   Events,
 } from "matter-js";
-import { gameData } from "./parameters";
+
 import {
   MAIN_BALL_CATEGORY,
   BALL_CATEGORY,
@@ -20,13 +20,15 @@ import {
 } from "./bodies";
 import { computeSwipeForce } from "./utils";
 
+import { gameData } from "./parameters";
+
 const {
   canvasSize,
   mainBallData,
   boardsData,
   pocketsData,
   ballsData,
-  ballsToWin,
+  BALLS_TO_WIN,
 } = gameData;
 
 let engine!: Matter.Engine;
@@ -231,7 +233,7 @@ const handleCollision = (event: MatterCollisionEvent): void => {
   });
 };
 
-function handleScore(point = 0): void {
+const handleScore = (point = 0): void => {
   if (!scoreboard) return;
   score += point;
   switch (point) {
@@ -245,12 +247,12 @@ function handleScore(point = 0): void {
       break;
   }
   scoreboard.textContent = `Score: ${score}`;
-  if (score < 0 || amountOfBalls + score < ballsToWin) {
+  if (score < 0 || amountOfBalls + score < BALLS_TO_WIN) {
     setFinishGame("game-over");
-  } else if (score >= ballsToWin) {
+  } else if (score >= BALLS_TO_WIN) {
     setFinishGame("you-win");
   }
-}
+};
 
 const resetGame = (): void => {
   isAiming = false;
@@ -271,6 +273,48 @@ const resetGame = (): void => {
   gameCanvas.addEventListener("mousedown", onMouseDown);
   document.addEventListener("mousemove", onMouseMove);
   document.addEventListener("mouseup", onMouseUp);
+};
+
+const onBeforeUpdate = (): void => {
+  if (isConstrained) return;
+  const { x, y } = mainBall.velocity;
+  const speed = Math.hypot(x, y);
+  if (speed > MAX_BALL_SPEED) {
+    Body.setVelocity(mainBall, {
+      x: (x / speed) * MAX_BALL_SPEED,
+      y: (y / speed) * MAX_BALL_SPEED,
+    });
+  }
+};
+
+const onAfterRender = (): void => {
+  if (!isAiming) return;
+  const ctx = render.context;
+  const rect = gameCanvas.getBoundingClientRect();
+  const scale = canvasSize.x / rect.width;
+  const { x: bx, y: by } = mainBall.position;
+  const dx = currentTouch.x - startTouch.x;
+  const dy = currentTouch.y - startTouch.y;
+  const dist = Math.hypot(dx, dy);
+  if (dist < 5) return;
+  const ex = bx + dx * scale;
+  const ey = by + dy * scale;
+
+  ctx.save();
+  ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
+  ctx.lineWidth = 3;
+  ctx.setLineDash([10, 6]);
+  ctx.beginPath();
+  ctx.moveTo(bx, by);
+  ctx.lineTo(ex, ey);
+  ctx.stroke();
+
+  ctx.setLineDash([]);
+  ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
+  ctx.beginPath();
+  ctx.arc(ex, ey, 6, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 };
 
 export const startGame = (): void => {
@@ -323,49 +367,11 @@ export const startGame = (): void => {
   gameCanvas.addEventListener("touchmove", onTouchMove, { passive: false });
   gameCanvas.addEventListener("touchend", onTouchEnd);
 
-  Events.on(engine, "beforeUpdate", () => {
-    if (isConstrained) return;
-    const { x, y } = mainBall.velocity;
-    const speed = Math.hypot(x, y);
-    if (speed > MAX_BALL_SPEED) {
-      Body.setVelocity(mainBall, {
-        x: (x / speed) * MAX_BALL_SPEED,
-        y: (y / speed) * MAX_BALL_SPEED,
-      });
-    }
-  });
+  Events.on(engine, "beforeUpdate", onBeforeUpdate);
 
   document.querySelector(".reset-button")?.addEventListener("click", resetGame);
 
-  Events.on(render, "afterRender", () => {
-    if (!isAiming) return;
-    const ctx = render.context;
-    const rect = gameCanvas.getBoundingClientRect();
-    const scale = canvasSize.x / rect.width;
-    const { x: bx, y: by } = mainBall.position;
-    const dx = currentTouch.x - startTouch.x;
-    const dy = currentTouch.y - startTouch.y;
-    const dist = Math.hypot(dx, dy);
-    if (dist < 5) return;
-    const ex = bx + dx * scale;
-    const ey = by + dy * scale;
-
-    ctx.save();
-    ctx.strokeStyle = "rgba(255, 255, 255, 0.85)";
-    ctx.lineWidth = 3;
-    ctx.setLineDash([10, 6]);
-    ctx.beginPath();
-    ctx.moveTo(bx, by);
-    ctx.lineTo(ex, ey);
-    ctx.stroke();
-
-    ctx.setLineDash([]);
-    ctx.fillStyle = "rgba(255, 255, 255, 0.85)";
-    ctx.beginPath();
-    ctx.arc(ex, ey, 6, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
-  });
+  Events.on(render, "afterRender", onAfterRender);
 
   Render.run(render);
   runner = Runner.create();

@@ -13,12 +13,12 @@ export const computeSwipeForce = (
   endX: number,
   endY: number,
 ): { x: number; y: number } => {
-  const MAX_PIXELS = 150;
+  const maxPixels = 150;
   const dx = endX - startX;
   const dy = endY - startY;
   const dist = Math.hypot(dx, dy);
   if (dist === 0) return { x: 0, y: 0 };
-  const ratio = Math.min(dist, MAX_PIXELS) / MAX_PIXELS;
+  const ratio = Math.min(dist, maxPixels) / maxPixels;
   return {
     x: -(dx / dist) * ratio,
     y: -(dy / dist) * ratio,

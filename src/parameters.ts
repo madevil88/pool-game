@@ -1,21 +1,21 @@
-interface BoardEntry {
+type BoardEntry = {
   x: number;
   y: number;
   width: number;
   height: number;
   slope: number;
   angle?: number;
-}
+};
 
-interface PocketEntry {
+type PocketEntry = {
   x: number;
   y: number;
-}
+};
 
-interface BallEntry {
+type BallEntry = {
   x: number;
   y: number;
-}
+};
 
 const canvasSize = { x: 750, y: 1334 };
 
@@ -82,7 +82,7 @@ const pocketsData: PocketEntry[] = [
   { x: 730, y: 1314 },
 ];
 
-const topThePiramid = 420;
+const topThePyramid = 420;
 const centerOfTheTable = 390;
 const ballDiameter = 44;
 const ballsRadius = ballDiameter / 2;
@@ -90,28 +90,28 @@ const rowHeight = ballDiameter - 5;
 
 const ballsData: BallEntry[] = [
   //first row
-  { x: centerOfTheTable, y: topThePiramid },
+  { x: centerOfTheTable, y: topThePyramid },
   //second row
-  { x: centerOfTheTable - ballsRadius, y: topThePiramid - rowHeight },
-  { x: centerOfTheTable + ballsRadius, y: topThePiramid - rowHeight },
+  { x: centerOfTheTable - ballsRadius, y: topThePyramid - rowHeight },
+  { x: centerOfTheTable + ballsRadius, y: topThePyramid - rowHeight },
   //third row
-  { x: centerOfTheTable - ballsRadius * 2, y: topThePiramid - rowHeight * 2 },
-  { x: centerOfTheTable, y: topThePiramid - rowHeight * 2 },
-  { x: centerOfTheTable + ballsRadius * 2, y: topThePiramid - rowHeight * 2 },
+  { x: centerOfTheTable - ballsRadius * 2, y: topThePyramid - rowHeight * 2 },
+  { x: centerOfTheTable, y: topThePyramid - rowHeight * 2 },
+  { x: centerOfTheTable + ballsRadius * 2, y: topThePyramid - rowHeight * 2 },
   //fourth row
-  { x: centerOfTheTable - ballsRadius * 3, y: topThePiramid - rowHeight * 3 },
-  { x: centerOfTheTable - ballsRadius, y: topThePiramid - rowHeight * 3 },
-  { x: centerOfTheTable + ballsRadius, y: topThePiramid - rowHeight * 3 },
-  { x: centerOfTheTable + ballsRadius * 3, y: topThePiramid - rowHeight * 3 },
+  { x: centerOfTheTable - ballsRadius * 3, y: topThePyramid - rowHeight * 3 },
+  { x: centerOfTheTable - ballsRadius, y: topThePyramid - rowHeight * 3 },
+  { x: centerOfTheTable + ballsRadius, y: topThePyramid - rowHeight * 3 },
+  { x: centerOfTheTable + ballsRadius * 3, y: topThePyramid - rowHeight * 3 },
   //fifth row
-  { x: centerOfTheTable - ballsRadius * 4, y: topThePiramid - rowHeight * 4 },
-  { x: centerOfTheTable - ballsRadius * 2, y: topThePiramid - rowHeight * 4 },
-  { x: centerOfTheTable, y: topThePiramid - rowHeight * 4 },
-  { x: centerOfTheTable + ballsRadius * 2, y: topThePiramid - rowHeight * 4 },
-  { x: centerOfTheTable + ballsRadius * 4, y: topThePiramid - rowHeight * 4 },
+  { x: centerOfTheTable - ballsRadius * 4, y: topThePyramid - rowHeight * 4 },
+  { x: centerOfTheTable - ballsRadius * 2, y: topThePyramid - rowHeight * 4 },
+  { x: centerOfTheTable, y: topThePyramid - rowHeight * 4 },
+  { x: centerOfTheTable + ballsRadius * 2, y: topThePyramid - rowHeight * 4 },
+  { x: centerOfTheTable + ballsRadius * 4, y: topThePyramid - rowHeight * 4 },
 ];
 
-const ballsToWin = 8;
+const BALLS_TO_WIN = 8;
 
 export const gameData = {
   canvasSize,
@@ -119,5 +119,5 @@ export const gameData = {
   boardsData,
   pocketsData,
   ballsData,
-  ballsToWin,
+  BALLS_TO_WIN,
 };
