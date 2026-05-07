@@ -39,7 +39,7 @@ module.exports = {
     port: 8080,
     static: "./dist",
   },
-  performance: { hints: false },
+  performance: { hints: "warning" },
   plugins: [
     new CopyWebpackPlugin({ patterns: [{ from: "./assets", to: "assets" }] }),
     new HtmlWebpackPlugin({
