@@ -2,3 +2,19 @@ node_modules/
 dist/
 test-results/
 *.bak
+.DS_Store
+*.log
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Editor
+.vscode/
+.idea/
+*.swp
